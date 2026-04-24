@@ -7,51 +7,151 @@ import joblib
 
 page_bg_img = """
 <style>
-/*Main app background */
 .stApp {
-    background-image: url("https://i.pinimg.com/736x/7b/e8/5a/7be85abb15f78a5727c1c40c8a62061a.jpg");
-    background-size: 1000px 1000px;
+    background-image: url(
+        "https://i.pinimg.com/736x/7b/e8/5a/7be85abb15f78a5727c1c40c8a62061a.jpg"
+    );
+    background-size: 1000px 800px;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
-
 }
-/*sidebar background */
+
 [data-testid="stSidebar"] {
-    background-image: url("https://i.pinimg.com/736x/7b/e8/5a/7be85abb15f78a5727c1c40c8a62061a.jpg"); /* same image or different one */
-    background-size: 1000px 1000px;
+    background-image: url(
+        "https://i.pinimg.com/736x/7b/e8/5a/7be85abb15f78a5727c1c40c8a62061a.jpg"
+    );
+    background-size: 100px 100px;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
 }
 
-/* Make all text clearer */
-h1, h2, h3, h4, h5, h6, p, div {
-    color: #000000 !important;   /* force black text */
-    text-shadow: 4px 4px 8px #ffffff; /* add subtle white glow */
+h1, h2, h3, h4, h5, h6, p, div, label {
+    color: #000023 !important;
+    text-shadow: 2px 2px 4px #ffffff;
 }
 </style>
 """
 st.markdown(page_bg_img, unsafe_allow_html=True)
 
+try:
+    model = joblib.load("model.pkl")
+except Exception as e:
+    st.error(f"Error loading model.pkl: {e}")
+    st.code(traceback.format_exc())
+    st.stop()
 
-model = joblib.load("model.pkl")
+st.markdown(
+    """
+    <div class="big-title">🛒 Shopping Behavior Dashboard</div>
+    """,
+    unsafe_allow_html=True
+)
 
-st.title("🛒 Shopping Behavior Dashboard")
-st.markdown("### 📘 Welcome to the Shopping Prediction App")
-st.markdown("## 📑 Project Summary")
+col1, col2, col3 = st.columns(3)
 
-st.markdown("""
-This project applies **machine learning** to predict customer shopping behavior.  
-The model uses features such as **price, discount, brand, and rating** to estimate the likelihood of purchase.  
+with col1:
+    st.markdown(
+        """
+        <div class="metric-card">
+            <div class="metric-number">4</div>
+            <div class="metric-label">Input Features</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-- ✅ The prediction dashboard shows whether a customer is likely to buy a product.  
-- 📉 The **Training Cost vs Iteration** graph demonstrates how the model improved during training, with cost steadily decreasing as iterations increased.  
-- 📊 The **Probability Curve** illustrates how purchase probability changes with price, highlighting sensitivity to pricing strategies.  
-- 🔍 The **Correlation Heatmap** provides insights into relationships among features, helping identify which factors most influence buying decisions.  
+with col2:
+    st.markdown(
+        """
+        <div class="metric-card">
+            <div class="metric-number">ML</div>
+            <div class="metric-label">Prediction Model</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-Overall, this app combines **predictive analytics** with **interactive visualization**, making it a practical tool for understanding consumer behavior and supporting business decision-making.
-""")
+with col3:
+    st.markdown(
+        """
+        <div class="metric-card">
+            <div class="metric-number">Live</div>
+            <div class="metric-label">Interactive Dashboard</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+st.markdown(
+    """
+    <div class="card">
+        <h2>📘 Welcome to the Shopping Prediction App</h2>
+        <p>
+        This app uses <b>machine learning</b> to predict whether a customer
+        is likely to buy a product based on price, discount, brand, and rating.
+        </p>
+
+    """,
+    unsafe_allow_html=True
+)
+st.markdown(
+    """
+    <style>
+    .big-title {
+        font-size: 48px;
+        font-weight: 800;
+        text-align: center;
+        color: #000023;
+        text-shadow: 3px 3px 8px white;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        background-color: rgba(255, 255, 255, 0.85);
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0px 4px 20px rgba(0,0,0,0.2);
+        margin-bottom: 20px;
+    }
+
+    .metric-card {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 18px;
+        text-align: center;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .metric-number {
+        font-size: 32px;
+        font-weight: bold;
+        color: #0A65C2;
+    }
+
+    .metric-label {
+        font-size: 16px;
+        color: #333334;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """
+
+
+- ✅ The prediction dashboard shows whether a customer is likely to buy a product.
+- 📉 The **Training Cost vs Iteration** graph demonstrates how the model improved during training.
+- 📊 The **Probability Curve** illustrates how purchase probability changes with price.
+- 🔍 The **Correlation Heatmap** provides insights into relationships among features.
+
+Overall, this app combines **predictive analytics** with **interactive visualization**
+to support business decision-making.
+"""
+)
 st.sidebar.markdown("### 🎛 Input Features")
 
 price = st.sidebar.slider("💲 Price", 0.0, 1000.0, 50.0)
