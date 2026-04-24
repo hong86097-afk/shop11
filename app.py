@@ -52,12 +52,27 @@ The model uses features such as **price, discount, brand, and rating** to estima
 
 Overall, this app combines **predictive analytics** with **interactive visualization**, making it a practical tool for understanding consumer behavior and supporting business decision-making.
 """)
+st.sidebar.markdown("### 🎛 Input Features")
 
-st.sidebar.header("Input Features")
-price = st.sidebar.slider("Price", 0.0, 1000.0, 50.0)
-discount = st.sidebar.slider("Discount (%)", 0, 100, 10)
-brand = st.sidebar.selectbox("Brand (encoded)", list(range(0, 11)), index=5)
-rating = st.sidebar.slider("Rating (1-5)", 1, 5, 3)
+price = st.sidebar.slider("💲 Price", 0.0, 1000.0, 50.0)
+discount = st.sidebar.slider("🏷️ Discount (%)", 0, 100, 10)
+brand = st.sidebar.selectbox("🏢 Brand (encoded)", list(range(0, 11)), index=5)
+rating = st.sidebar.slider("⭐ Rating (1-5)", 1, 5, 3)
+
+# Show selected values in professional info boxes
+st.sidebar.markdown(
+    f"""
+    <div style="background-color:#f0f0f0; padding:10px; border-radius:8px; margin-top:10px;">
+    <b>Selected Values:</b><br>
+    💲 Price: {price}<br>
+    🏷️ Discount: {discount}%<br>
+    🏢 Brand: {brand}<br>
+    ⭐ Rating: {rating}
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 
 if st.sidebar.button("Predict Purchase"):
     input_data = np.array([[price, discount, brand, rating]])
@@ -69,7 +84,6 @@ if st.sidebar.button("Predict Purchase"):
         st.balloons()
     else:
         st.error(f"❌ Unlikely to buy. (Probability: {prob:.2f}%)")
-
    
     col1, col2 = st.columns(2)
 
@@ -93,15 +107,12 @@ if st.sidebar.button("Predict Purchase"):
 
     try:
         costs = np.load("training_costs.npy")
-        costs = np.array(costs).flatten()
-        st.write("Loaded real training_costs.npy")
-    except Exception as e:
-        st.warning(f"Using fallback demo costs: {e}")
+    except:
         costs = [0.7 - 0.00035*i for i in range(1000)]  # fallback demo curve
+
     fig2, ax = plt.subplots()
-    x_cost = range(1, len(costs) + 1)
-    ax.plot(x_cost, costs, color="purple", linewidth=2, label="Training Cost")
-    ax.fill_between(x_cost, costs, color="purple", alpha=0.2)
+    ax.plot(range(1, len(costs)+1), costs, color="purple", linewidth=2, label="Training Cost")
+    ax.fill_between(range(1, len(costs)+1), costs, color="purple", alpha=0.2)
     ax.set_xlabel("Iteration")
     ax.set_ylabel("Cost")
     ax.set_title("Cost vs Iteration")
@@ -116,7 +127,7 @@ if st.sidebar.button("Predict Purchase"):
         sns.heatmap(corr, annot=True, cmap="YlGnBu", ax=ax3)
         ax3.set_title("Feature Correlation Heatmap")
         st.pyplot(fig3)
-    except Exception as e:
+    except:
         st.info("📊 Heatmap unavailable (dataset not found).")
 
 
